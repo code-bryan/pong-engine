@@ -14,6 +14,7 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private Texture2D _whitePixel;
+    private SpriteFont _font;
     
     private EntityManager _entityManager;
     private List<ISystem> _systems;
@@ -33,34 +34,64 @@ public class Game1 : Game
         
         int screenHeight = GraphicsDevice.Viewport.Height;
         int screenWidth = GraphicsDevice.Viewport.Width;
+        float initialSpeed = 250f;
+        var ballStartPosition = new Vector2(screenWidth / 2 - 10, screenHeight / 2 - 10);
         
         player = _entityManager.CreateEntity();
-        _entityManager.AddComponent(player, new InputComponent() { Speed = 400,  upKey = Keys.W, downKey = Keys.S });
+        _entityManager.AddComponent(player, new InputComponent()
+        {
+            Speed = 400,
+            upKey = Keys.W,
+            downKey = Keys.S
+        });
         _entityManager.AddComponent(player, new TransformComponent(
             position: new Vector2(50, screenHeight / 2 - 50),
             width: 20,
             height: 100
         ));
+        _entityManager.AddComponent(player, new ScoreComponent()
+        {
+            Score = 0,
+            TextPosition = new Vector2(screenWidth / 4, 20)
+        });
         
         
         enemy = _entityManager.CreateEntity();
-        _entityManager.AddComponent(enemy, new InputComponent() { Speed = 400, upKey =  Keys.Up, downKey = Keys.Down });
+        _entityManager.AddComponent(enemy, new InputComponent()
+        {
+            Speed = 400,
+            upKey = Keys.Up,
+            downKey = Keys.Down
+        });
         _entityManager.AddComponent(enemy, new TransformComponent(
             position: new Vector2(screenWidth - 70, screenHeight / 2 - 50),
             width: 20,
             height: 100
         ));
+        _entityManager.AddComponent(enemy, new ScoreComponent()
+        {
+            Score = 0,
+            TextPosition = new Vector2(screenWidth * 3 / 4, 20)
+        });
+        
         
         ball = _entityManager.CreateEntity();
+        _entityManager.AddComponent(ball, new BallComponent());
         _entityManager.AddComponent(ball, new TransformComponent(
-            position: new Vector2(screenWidth / 2 - 10, screenHeight / 2 - 10),
+            position: ballStartPosition,
             width: 20,
             height: 20
         ));
         
+        // Asignamos una velocidad inicial para que se mueva
+        var ballTransform = _entityManager.GetComponent<TransformComponent>(ball);
+        ballTransform.Velocity = new Vector2(initialSpeed, initialSpeed);
+        
 
         _systems = [
-            new InputSystem(_entityManager, screenHeight)
+            new InputSystem(_entityManager, screenHeight),
+            new BallMovementSystem(_entityManager, screenHeight),
+            new CollisionSystem(_entityManager, screenWidth, screenHeight, initialSpeed, ballStartPosition),
         ];
 
         base.Initialize();
@@ -74,6 +105,7 @@ public class Game1 : Game
         // Crea un pixel blanco para dibujar las figuras (Rectángulos)
         _whitePixel = new Texture2D(GraphicsDevice, 1, 1);
         _whitePixel.SetData(new[] { Color.White });
+        _font = Content.Load<SpriteFont>("Fonts/Arial");
     }
 
     protected override void Update(GameTime gameTime)
@@ -122,6 +154,17 @@ public class Game1 : Game
                 ballTransform.Width, 
                 ballTransform.Height), 
             Color.White);
+        
+        foreach (var entityId in _entityManager.GetEntitiesWith<ScoreComponent>())
+        {
+            var scoreComp = _entityManager.GetComponent<ScoreComponent>(entityId);
+        
+            _spriteBatch.DrawString(
+                _font, 
+                scoreComp.Score.ToString(), 
+                scoreComp.TextPosition, 
+                Color.White);
+        }
 
         _spriteBatch.End();
 
