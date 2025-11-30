@@ -26,7 +26,7 @@ public class CollisionSystem(
                 return;
             }
 
-            foreach (var id in entityManager.GetEntitiesWith<InputComponent, TransformComponent, ScoreComponent, ShapeComponent>())
+            foreach (var id in entityManager.GetEntitiesWith<TransformComponent, ScoreComponent, ShapeComponent>())
             {
                 var transform = entityManager.GetComponent<TransformComponent>(id);
                 var shape = entityManager.GetComponent<ShapeComponent>(id);

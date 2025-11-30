@@ -40,6 +40,7 @@ public class Game1 : Game
         _gameplaySettings = new GameplaySettings(_settings);
 
         _systems = [
+            new AiSystem(_entityManager, _gameplaySettings),
             new InputSystem(_entityManager, _gameplaySettings),
             new BallMovementSystem(_entityManager, _gameplaySettings),
             new CollisionSystem(_entityManager, _gameplaySettings),

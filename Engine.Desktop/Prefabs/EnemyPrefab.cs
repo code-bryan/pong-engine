@@ -14,12 +14,7 @@ public class EnemyPrefab(EntityManager manager)
         int id = manager.CreateEntity();
         manager.AddComponent(id, new RenderComponent(texture, Color.White));
         manager.AddComponent(id, new ShapeComponent(20, 100));
-        
-        manager.AddComponent(id, new InputComponent()
-        {
-            upKey = Keys.Up,
-            downKey = Keys.Down
-        });
+        manager.AddComponent(id, new AIComponent() { Difficulty = .7f });
         
         manager.AddComponent(id, new TransformComponent(
             new Vector2(settings.ScreenWidth - 70, settings.ScreenHeight / 2 - 50))
