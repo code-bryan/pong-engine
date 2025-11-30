@@ -15,7 +15,6 @@ public class EnemyPrefab(EntityManager manager)
         manager.AddComponent(id, new RenderComponent(texture, Color.White));
         manager.AddComponent(id, new InputComponent()
         {
-            Speed = 400,
             upKey = Keys.Up,
             downKey = Keys.Down
         });

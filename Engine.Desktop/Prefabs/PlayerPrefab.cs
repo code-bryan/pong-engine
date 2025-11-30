@@ -19,7 +19,6 @@ public class PlayerPrefab(EntityManager manager)
         
         manager.AddComponent(id, new InputComponent()
         {
-            Speed = 400,
             upKey = Keys.W,
             downKey = Keys.S
         });

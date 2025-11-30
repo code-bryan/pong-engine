@@ -6,5 +6,4 @@ public class InputComponent
 {
     public Keys upKey;
     public Keys downKey;
-    public float Speed { get; set; }
 }
