@@ -10,8 +10,11 @@ public class CollisionSystem(
 {
     public void Update(GameTime gameTime)
     {
-        foreach (var ballId in entityManager.GetEntitiesWith<BallComponent, TransformComponent>())
+        foreach (var ballId in entityManager.GetEntitiesWith<TagComponent, TransformComponent>())
         {
+            var tag = entityManager.GetComponent<TagComponent>(ballId);
+            if (tag.Tag != "Ball") continue;
+            
             var ballTransform = entityManager.GetComponent<TransformComponent>(ballId);
 
             if (ballTransform.Position.X < 0 || ballTransform.Position.X + + ballTransform.Width > gs.Settings.ScreenWidth)

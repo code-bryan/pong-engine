@@ -13,7 +13,7 @@ public class BallPrefab(EntityManager manager)
         var id = manager.CreateEntity();
         
         manager.AddComponent(id, new RenderComponent(texture2D, Color.White));
-        manager.AddComponent(id, new BallComponent());
+        manager.AddComponent(id, new TagComponent("Ball"));
         manager.AddComponent(id, new TransformComponent(
             position: settings.BallStartPosition,
             width: 20,

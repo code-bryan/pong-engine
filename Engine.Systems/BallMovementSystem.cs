@@ -11,8 +11,12 @@ public class BallMovementSystem(EntityManager entityManager, GameplaySettings gs
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        foreach (var entityId in entityManager.GetEntitiesWith<BallComponent, TransformComponent>())
+        foreach (var entityId in entityManager.GetEntitiesWith<TagComponent, TransformComponent>())
         {
+            var tag = entityManager.GetComponent<TagComponent>(entityId);
+            
+            if (tag.Tag != "Ball") continue;
+            
             var transform =  entityManager.GetComponent<TransformComponent>(entityId);
             
             transform.Position += transform.Velocity * deltaTime;
