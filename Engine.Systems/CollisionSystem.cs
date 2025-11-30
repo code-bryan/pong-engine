@@ -31,19 +31,8 @@ public class CollisionSystem(
                 var transform = entityManager.GetComponent<TransformComponent>(id);
                 var shape = entityManager.GetComponent<ShapeComponent>(id);
 
-                var ballRect = new Rectangle(
-                    (int)ballTransform.Position.X,
-                    (int)ballTransform.Position.Y,
-                    ballShape.Width,
-                    ballShape.Height
-                );
-                
-                var paddleRect = new Rectangle(
-                    (int)transform.Position.X,
-                    (int)transform.Position.Y,
-                    shape.Width,
-                    shape.Height
-                );
+                var ballRect = shape.GetRectangle(ballTransform);
+                var paddleRect = shape.GetRectangle(transform);
 
                 if (!ballRect.Intersects(paddleRect)) continue;
                 

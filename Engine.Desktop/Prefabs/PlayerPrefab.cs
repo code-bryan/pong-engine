@@ -15,7 +15,10 @@ public class PlayerPrefab(EntityManager manager)
         
         manager.AddComponent(id, new RenderComponent(texture, Color.White));
         manager.AddComponent(id, new ShapeComponent(20, 100));
-        manager.AddComponent(id, new TransformComponent(new Vector2(50, settings.ScreenHeight / 2 - 50)));
+        
+        manager.AddComponent(id, new TransformComponent(
+            new Vector2(50, settings.ScreenHeight / 2 - 50))
+        );
         
         manager.AddComponent(id, new InputComponent()
         {

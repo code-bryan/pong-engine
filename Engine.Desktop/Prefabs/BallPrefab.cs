@@ -21,10 +21,6 @@ public class BallPrefab(EntityManager manager)
             Velocity = Vector2.One * settings.BallInitialSpeed,
             Speed = settings.BallInitialSpeed,
         });
-        
-        // Asignamos una velocidad inicial para que se mueva
-        // var ballTransform = manager.GetComponent<TransformComponent>(id);
-        // ballTransform.Velocity = Vector2.One * settings.BallInitialSpeed;
 
         return id;
     }

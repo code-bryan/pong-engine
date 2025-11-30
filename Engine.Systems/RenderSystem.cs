@@ -16,17 +16,10 @@ public class RenderSystem(EntityManager entityManager, SpriteBatch spriteBatch)
             var transform = entityManager.GetComponent<TransformComponent>(entityId);
             var render = entityManager.GetComponent<RenderComponent>(entityId);
             var shape = entityManager.GetComponent<ShapeComponent>(entityId);
-
-            var destinationRectangle = new Rectangle(
-                (int)transform.Position.X,
-                (int)transform.Position.Y,      
-                shape.Width,
-                shape.Height
-            );
             
             spriteBatch.Draw(
                 render.Texture,
-                destinationRectangle,
+                shape.GetRectangle(transform),
                 render.Color
             );
         }
