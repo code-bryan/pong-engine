@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Systems;
 
-public class InputSystem(EntityManager entityManager, int screenHeight, Keys upKey, Keys downKey) : ISystem
+public class InputSystem(EntityManager entityManager, int screenHeight) : ISystem
 {
     public void Update(GameTime gameTime)
     {
@@ -18,12 +18,12 @@ public class InputSystem(EntityManager entityManager, int screenHeight, Keys upK
             var transform =  entityManager.GetComponent<TransformComponent>(entityId);
             var input =  entityManager.GetComponent<InputComponent>(entityId);
 
-            if (keyboardState.IsKeyDown(upKey))
+            if (keyboardState.IsKeyDown(input.upKey))
             {
                 transform.Position = transform.Position with { Y = transform.Position.Y - input.Speed * deltaTime };
             }
             
-            if (keyboardState.IsKeyDown(downKey))
+            if (keyboardState.IsKeyDown(input.downKey))
             {
                 transform.Position = transform.Position with { Y = transform.Position.Y + input.Speed * deltaTime };
             }

@@ -14,6 +14,11 @@ public class EntityManager
 
     public void AddComponent<T>(int id, T component) where T : class
     {
+        if (_entityComponents[id].ContainsKey(typeof(T)))
+        {
+            throw new InvalidOperationException($"La Entidad {id} ya tiene un componente del tipo {typeof(T).Name}.");
+        }
+        
         _entityComponents[id].Add(typeof(T), component);
     }
 
