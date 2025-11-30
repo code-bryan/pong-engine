@@ -18,6 +18,7 @@ public class Game1 : Game
     
     private EntityManager _entityManager;
     private List<ISystem> _systems;
+    private RenderSystem _renderSystem;
     private int player, ball, enemy;
 
     public Game1()
@@ -32,9 +33,9 @@ public class Game1 : Game
         // TODO: Add your initialization logic here
         _entityManager = new EntityManager();
         
-        int screenHeight = GraphicsDevice.Viewport.Height;
-        int screenWidth = GraphicsDevice.Viewport.Width;
-        float initialSpeed = 250f;
+        var screenHeight = GraphicsDevice.Viewport.Height;
+        var screenWidth = GraphicsDevice.Viewport.Width;
+        const float initialSpeed = 250f;
         var ballStartPosition = new Vector2(screenWidth / 2 - 10, screenHeight / 2 - 10);
         
         player = _entityManager.CreateEntity();
@@ -86,7 +87,6 @@ public class Game1 : Game
         // Asignamos una velocidad inicial para que se mueva
         var ballTransform = _entityManager.GetComponent<TransformComponent>(ball);
         ballTransform.Velocity = new Vector2(initialSpeed, initialSpeed);
-        
 
         _systems = [
             new InputSystem(_entityManager, screenHeight),
@@ -106,6 +106,12 @@ public class Game1 : Game
         _whitePixel = new Texture2D(GraphicsDevice, 1, 1);
         _whitePixel.SetData(new[] { Color.White });
         _font = Content.Load<SpriteFont>("Fonts/Arial");
+        
+        _renderSystem = new RenderSystem(_entityManager, _spriteBatch);
+        
+        _entityManager.AddComponent(player, new RenderComponent(_whitePixel, Color.White));
+        _entityManager.AddComponent(enemy, new RenderComponent(_whitePixel, Color.White));
+        _entityManager.AddComponent(ball, new RenderComponent(_whitePixel, Color.White));
     }
 
     protected override void Update(GameTime gameTime)
@@ -128,32 +134,9 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.Black);
         
+        _renderSystem.Draw();
+        
         _spriteBatch.Begin();
-
-        // TODO: Add your drawing code here
-        // ** Dibujar Paletas (Entidades con InputComponent y TransformComponent) **
-        foreach (var entityId in _entityManager.GetEntitiesWith<TransformComponent, InputComponent>())
-        {
-            var transform = _entityManager.GetComponent<TransformComponent>(entityId);
-        
-            _spriteBatch.Draw(_whitePixel, 
-                new Rectangle(
-                    (int)transform.Position.X, 
-                    (int)transform.Position.Y, 
-                    transform.Width, 
-                    transform.Height), 
-                Color.White);
-        }
-        
-        // ** Dibujar la Bola **
-        var ballTransform = _entityManager.GetComponent<TransformComponent>(ball);
-        _spriteBatch.Draw(_whitePixel, 
-            new Rectangle(
-                (int)ballTransform.Position.X, 
-                (int)ballTransform.Position.Y, 
-                ballTransform.Width, 
-                ballTransform.Height), 
-            Color.White);
         
         foreach (var entityId in _entityManager.GetEntitiesWith<ScoreComponent>())
         {
