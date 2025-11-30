@@ -1,4 +1,5 @@
 using Engine.Core.Components;
+using Engine.Core.Configuration;
 using Engine.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +9,7 @@ namespace Engine.Desktop.Prefabs;
 
 public class PlayerPrefab(EntityManager manager)
 {
-    public int Create(Texture2D texture, int screenWidth, int screenHeight)
+    public int Create(Texture2D texture, EngineSettings settings)
     {
         int id = manager.CreateEntity();
         
@@ -22,7 +23,7 @@ public class PlayerPrefab(EntityManager manager)
         });
         
         manager.AddComponent(id, new TransformComponent(
-            position: new Vector2(50, screenHeight / 2 - 50),
+            position: new Vector2(50, settings.ScreenHeight / 2 - 50),
             width: 20,
             height: 100
         ));
@@ -30,7 +31,7 @@ public class PlayerPrefab(EntityManager manager)
         manager.AddComponent(id, new ScoreComponent()
         {
             Score = 0,
-            TextPosition = new Vector2(screenWidth / 4, 20)
+            TextPosition = new Vector2(settings.ScreenWidth / 4, 20)
         });
 
         return id;

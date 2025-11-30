@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Engine.Core.Components;
+using Engine.Core.Configuration;
 using Engine.Core.ECS;
 using Engine.Core.Interfaces;
 using Engine.Desktop.Prefabs;
@@ -20,10 +21,10 @@ public class Game1 : Game
     private EntityManager _entityManager;
     private List<ISystem> _systems;
     private RenderSystem _renderSystem;
-    
-    private const float initialSpeed = 250f;
-    private Vector2 BallStartPosition => new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
+    private EngineSettings _settings;
+    private GameplaySettings _gameplaySettings;
+    
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -35,14 +36,13 @@ public class Game1 : Game
     {
         // TODO: Add your initialization logic here
         _entityManager = new EntityManager();
-        
-        var screenHeight = GraphicsDevice.Viewport.Height;
-        var screenWidth = GraphicsDevice.Viewport.Width;
+        _settings = new EngineSettings(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+        _gameplaySettings = new GameplaySettings(_settings);
 
         _systems = [
-            new InputSystem(_entityManager, screenHeight),
-            new BallMovementSystem(_entityManager, screenHeight),
-            new CollisionSystem(_entityManager, screenWidth, screenHeight, initialSpeed, BallStartPosition),
+            new InputSystem(_entityManager, _gameplaySettings),
+            new BallMovementSystem(_entityManager, _gameplaySettings),
+            new CollisionSystem(_entityManager, _gameplaySettings),
         ];
 
         base.Initialize();
@@ -59,13 +59,10 @@ public class Game1 : Game
         _font = Content.Load<SpriteFont>("Fonts/Arial");
         
         _renderSystem = new RenderSystem(_entityManager, _spriteBatch);
-        
-        var screenHeight = GraphicsDevice.Viewport.Height;
-        var screenWidth = GraphicsDevice.Viewport.Width;
 
-        new PlayerPrefab(_entityManager).Create(_whitePixel, screenWidth, screenHeight);
-        new EnemyPrefab(_entityManager).Create(_whitePixel, screenWidth, screenHeight);
-        new BallPrefab(_entityManager).Create(_whitePixel, initialSpeed, BallStartPosition);
+        new PlayerPrefab(_entityManager).Create(_whitePixel, _settings);
+        new EnemyPrefab(_entityManager).Create(_whitePixel,_settings);
+        new BallPrefab(_entityManager).Create(_whitePixel, _gameplaySettings);
     }
 
     protected override void Update(GameTime gameTime)

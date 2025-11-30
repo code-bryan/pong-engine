@@ -1,4 +1,5 @@
 using Engine.Core.Components;
+using Engine.Core.Configuration;
 using Engine.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +9,7 @@ namespace Engine.Desktop.Prefabs;
 
 public class EnemyPrefab(EntityManager manager)
 {
-    public int Create(Texture2D texture, int screenWidth, int screenHeight)
+    public int Create(Texture2D texture, EngineSettings settings)
     {
         int id = manager.CreateEntity();
         manager.AddComponent(id, new RenderComponent(texture, Color.White));
@@ -19,14 +20,14 @@ public class EnemyPrefab(EntityManager manager)
             downKey = Keys.Down
         });
         manager.AddComponent(id, new TransformComponent(
-            position: new Vector2(screenWidth - 70, screenHeight / 2 - 50),
+            position: new Vector2(settings.ScreenWidth - 70, settings.ScreenHeight / 2 - 50),
             width: 20,
             height: 100
         ));
         manager.AddComponent(id, new ScoreComponent()
         {
             Score = 0,
-            TextPosition = new Vector2(screenWidth * 3 / 4, 20)
+            TextPosition = new Vector2(settings.ScreenWidth * 3 / 4, 20)
         });
 
         return id;
