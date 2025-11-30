@@ -9,27 +9,29 @@ public class BallMovementSystem(EntityManager entityManager, GameplaySettings gs
 {
     public void Update(GameTime gameTime)
     {
-        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        foreach (var entityId in entityManager.GetEntitiesWith<TagComponent, TransformComponent>())
+        foreach (var entityId in entityManager.GetEntitiesWith<TagComponent, MovementComponent, ShapeComponent, TransformComponent>())
         {
             var tag = entityManager.GetComponent<TagComponent>(entityId);
             
             if (tag.Tag != "Ball") continue;
             
             var transform =  entityManager.GetComponent<TransformComponent>(entityId);
+            var movement = entityManager.GetComponent<MovementComponent>(entityId);
+            var shape = entityManager.GetComponent<ShapeComponent>(entityId);
             
-            transform.Position += transform.Velocity * deltaTime;
+            transform.Position += movement.Velocity * deltaTime;
 
             if (transform.Position.Y < 0)
             {
                 transform.Position = transform.Position with { Y = 0 };
-                transform.Velocity = new Vector2(transform.Velocity.X, -transform.Velocity.Y);
+                movement.Velocity = new Vector2(movement.Velocity.X, -movement.Velocity.Y);
             }
-            else if(transform.Position.Y + transform.Height > gs.Settings.ScreenHeight)
+            else if(transform.Position.Y + shape.Height > gs.Settings.ScreenHeight)
             {
-                transform.Position = transform.Position with { Y = gs.Settings.ScreenHeight - transform.Height };
-                transform.Velocity = new Vector2(transform.Velocity.X, -transform.Velocity.Y);
+                transform.Position = transform.Position with { Y = gs.Settings.ScreenHeight - shape.Height };
+                movement.Velocity = new Vector2(movement.Velocity.X, -movement.Velocity.Y);
             }
         }
     }

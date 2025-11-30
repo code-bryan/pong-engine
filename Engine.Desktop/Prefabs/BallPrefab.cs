@@ -14,15 +14,17 @@ public class BallPrefab(EntityManager manager)
         
         manager.AddComponent(id, new RenderComponent(texture2D, Color.White));
         manager.AddComponent(id, new TagComponent("Ball"));
-        manager.AddComponent(id, new TransformComponent(
-            position: settings.BallStartPosition,
-            width: 20,
-            height: 20
-        ));
+        manager.AddComponent(id, new TransformComponent(settings.BallStartPosition));
+        manager.AddComponent(id, new ShapeComponent(20, 20));
+        manager.AddComponent(id, new MovementComponent()
+        {
+            Velocity = Vector2.One * settings.BallInitialSpeed,
+            Speed = settings.BallInitialSpeed,
+        });
         
         // Asignamos una velocidad inicial para que se mueva
-        var ballTransform = manager.GetComponent<TransformComponent>(id);
-        ballTransform.Velocity = Vector2.One * settings.BallInitialSpeed;
+        // var ballTransform = manager.GetComponent<TransformComponent>(id);
+        // ballTransform.Velocity = Vector2.One * settings.BallInitialSpeed;
 
         return id;
     }

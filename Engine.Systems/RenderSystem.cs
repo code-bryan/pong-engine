@@ -11,16 +11,17 @@ public class RenderSystem(EntityManager entityManager, SpriteBatch spriteBatch)
     {
         spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
 
-        foreach (var entityId in entityManager.GetEntitiesWith<TransformComponent, RenderComponent>())
+        foreach (var entityId in entityManager.GetEntitiesWith<TransformComponent, RenderComponent, ShapeComponent>())
         {
             var transform = entityManager.GetComponent<TransformComponent>(entityId);
             var render = entityManager.GetComponent<RenderComponent>(entityId);
+            var shape = entityManager.GetComponent<ShapeComponent>(entityId);
 
             var destinationRectangle = new Rectangle(
                 (int)transform.Position.X,
                 (int)transform.Position.Y,      
-                transform.Width,
-                transform.Height
+                shape.Width,
+                shape.Height
             );
             
             spriteBatch.Draw(

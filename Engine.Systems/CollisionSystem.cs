@@ -10,65 +10,53 @@ public class CollisionSystem(
 {
     public void Update(GameTime gameTime)
     {
-        foreach (var ballId in entityManager.GetEntitiesWith<TagComponent, TransformComponent>())
+        foreach (var ballId in entityManager.GetEntitiesWith<TagComponent, MovementComponent, TransformComponent>())
         {
             var tag = entityManager.GetComponent<TagComponent>(ballId);
             if (tag.Tag != "Ball") continue;
             
             var ballTransform = entityManager.GetComponent<TransformComponent>(ballId);
+            var ballShape = entityManager.GetComponent<ShapeComponent>(ballId);
+            
+            var movement = entityManager.GetComponent<MovementComponent>(ballId);
 
-            if (ballTransform.Position.X < 0 || ballTransform.Position.X + + ballTransform.Width > gs.Settings.ScreenWidth)
+            if (ballTransform.Position.X < 0 || ballTransform.Position.X + + ballShape.Width > gs.Settings.ScreenWidth)
             {
                 HandleScoring(ballId, ballTransform);
                 return;
             }
 
-            foreach (var id in entityManager.GetEntitiesWith<InputComponent, TransformComponent, ScoreComponent>())
+            foreach (var id in entityManager.GetEntitiesWith<InputComponent, TransformComponent, ScoreComponent, ShapeComponent>())
             {
                 var transform = entityManager.GetComponent<TransformComponent>(id);
+                var shape = entityManager.GetComponent<ShapeComponent>(id);
 
                 var ballRect = new Rectangle(
                     (int)ballTransform.Position.X,
                     (int)ballTransform.Position.Y,
-                    ballTransform.Width,
-                    ballTransform.Height
+                    ballShape.Width,
+                    ballShape.Height
                 );
                 
                 var paddleRect = new Rectangle(
                     (int)transform.Position.X,
                     (int)transform.Position.Y,
-                    transform.Width,
-                    transform.Height
+                    shape.Width,
+                    shape.Height
                 );
 
                 if (!ballRect.Intersects(paddleRect)) continue;
-                // Invertir la dirección horizontal (rebote)
-                ballTransform.Velocity = new Vector2(-ballTransform.Velocity.X, ballTransform.Velocity.Y);
-                        
-                // Opcional: Aumentar la velocidad
-                ballTransform.Velocity *= 1.05f; 
-                        
-                // Corrección de posición (para evitar que la bola se pegue a la paleta)
-                if (ballTransform.Velocity.X > 0) // Bola va hacia la derecha, golpeó la paleta izquierda
-                {
-                    ballTransform.Position = ballTransform.Position with
-                    {
-                        X = transform.Position.X + transform.Width
-                    };
-                }
-                else // Bola va hacia la izquierda, golpeó la paleta derecha
-                {
-                    ballTransform.Position = ballTransform.Position with
-                    {
-                        X = transform.Position.X - ballTransform.Width
-                    };
-                }
+                
+                movement.Velocity = new Vector2(-movement.Velocity.X, movement.Velocity.Y);
+                movement.Velocity *= 1.05f;
             }
         }
     }
 
     private void HandleScoring(int ballId, TransformComponent component)
     {
+        var ballMovement = entityManager.GetComponent<MovementComponent>(ballId);
+        
         var enemyScore = component.Position.X < 0;
 
         foreach (var id in entityManager.GetEntitiesWith<ScoreComponent>())
@@ -85,8 +73,7 @@ public class CollisionSystem(
         }
 
         component.Position = gs.BallStartPosition;
-        
-        var newVelX = (component.Velocity.X > 0 ? -1 : 1) * gs.BallInitialSpeed;
-        component.Velocity = new Vector2(newVelX, gs.BallInitialSpeed);
+        float newVelocityX = (ballMovement.Velocity.X > 0 ? -1 : 1) * gs.BallInitialSpeed;
+        ballMovement.Velocity = new Vector2(newVelocityX, gs.BallInitialSpeed);
     }
 }

@@ -19,11 +19,16 @@ public class EnemyPrefab(EntityManager manager)
             upKey = Keys.Up,
             downKey = Keys.Down
         });
-        manager.AddComponent(id, new TransformComponent(
-            position: new Vector2(settings.ScreenWidth - 70, settings.ScreenHeight / 2 - 50),
-            width: 20,
-            height: 100
-        ));
+        
+        manager.AddComponent(id, new TransformComponent(new Vector2(settings.ScreenWidth - 70, settings.ScreenHeight / 2 - 50)));
+        manager.AddComponent(id, new ShapeComponent(20, 100));
+        
+        manager.AddComponent(id, new MovementComponent()
+        {
+            Velocity = Vector2.Zero,
+            Speed = 400,
+        });
+
         manager.AddComponent(id, new ScoreComponent()
         {
             Score = 0,

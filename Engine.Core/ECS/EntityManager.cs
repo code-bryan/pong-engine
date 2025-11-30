@@ -66,4 +66,18 @@ public class EntityManager
             }
         }
     }
+    
+    public IEnumerable<int> GetEntitiesWith<T1, T2, T3, T4>() where T1 : class where T2 : class where T3 : class where T4 : class
+    {
+        foreach (var pair in _entityComponents)
+        {
+            if (pair.Value.ContainsKey(typeof(T1)) &&
+                pair.Value.ContainsKey(typeof(T2)) &&
+                pair.Value.ContainsKey(typeof(T3)) &&
+                pair.Value.ContainsKey(typeof(T4)))
+            {
+                yield return pair.Key;
+            }
+        }
+    }
 }

@@ -13,10 +13,11 @@ public class InputSystem(EntityManager entityManager, GameplaySettings gs) : ISy
         var keyboardState = Keyboard.GetState();
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        foreach (var entityId in entityManager.GetEntitiesWith<TransformComponent, InputComponent>())
+        foreach (var entityId in entityManager.GetEntitiesWith<TransformComponent, InputComponent, ShapeComponent>())
         {
             var transform =  entityManager.GetComponent<TransformComponent>(entityId);
             var input =  entityManager.GetComponent<InputComponent>(entityId);
+            var shape = entityManager.GetComponent<ShapeComponent>(entityId);
 
             if (keyboardState.IsKeyDown(input.upKey))
             {
@@ -31,7 +32,7 @@ public class InputSystem(EntityManager entityManager, GameplaySettings gs) : ISy
             transform.Position = Vector2.Clamp(
                 transform.Position,
                 new Vector2(transform.Position.X, 0),
-                new Vector2(transform.Position.X, gs.Settings.ScreenHeight - transform.Height)
+                new Vector2(transform.Position.X, gs.Settings.ScreenHeight - shape.Height)
             );
         }
     }
