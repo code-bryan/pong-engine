@@ -1,6 +1,6 @@
 namespace Engine.Core.Components;
 
-public class TagComponent
+public class TagComponent(string tag)
 {
-    
+    public string Tag { get; set; } = tag;
 }

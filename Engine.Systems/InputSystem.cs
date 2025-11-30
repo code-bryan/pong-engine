@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Systems;
 
-public class InputSystem(EntityManager entityManager, int screenHeight) : ISystem
+public class InputSystem(EntityManager entityManager, GameplaySettings gs) : ISystem
 {
     public void Update(GameTime gameTime)
     {
@@ -31,7 +31,7 @@ public class InputSystem(EntityManager entityManager, int screenHeight) : ISyste
             transform.Position = Vector2.Clamp(
                 transform.Position,
                 new Vector2(transform.Position.X, 0),
-                new Vector2(transform.Position.X, screenHeight - transform.Height)
+                new Vector2(transform.Position.X, gs.Settings.ScreenHeight - transform.Height)
             );
         }
     }
