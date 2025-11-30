@@ -10,7 +10,7 @@ public class CollisionSystem(
 {
     public void Update(GameTime gameTime)
     {
-        foreach (var ballId in entityManager.GetEntitiesWith<TagComponent, MovementComponent, TransformComponent>())
+        foreach (var ballId in entityManager.GetEntitiesWith<TagComponent, MovementComponent, TransformComponent, ShapeComponent>())
         {
             var tag = entityManager.GetComponent<TagComponent>(ballId);
             if (tag.Tag != "Ball") continue;
@@ -30,14 +30,42 @@ public class CollisionSystem(
             {
                 var transform = entityManager.GetComponent<TransformComponent>(id);
                 var shape = entityManager.GetComponent<ShapeComponent>(id);
-
-                var ballRect = shape.GetRectangle(ballTransform);
+                
+                var ballRect = ballShape.GetRectangle(ballTransform);
                 var paddleRect = shape.GetRectangle(transform);
 
                 if (!ballRect.Intersects(paddleRect)) continue;
                 
-                movement.Velocity = new Vector2(-movement.Velocity.X, movement.Velocity.Y);
-                movement.Velocity *= 1.05f;
+                float centerY = transform.Position.Y + (shape.Height / 2f);
+                float ballCenterY = ballTransform.Position.Y + (ballShape.Height / 2f);
+
+                float hit = ballCenterY - centerY;
+                float normalizedHit = hit / (shape.Height / 2f);
+                normalizedHit = MathHelper.Clamp(normalizedHit, -1f, 1f);
+                
+                
+                const float maxBounceAngle = MathHelper.Pi / 3f; 
+                float newAngle = normalizedHit * maxBounceAngle;
+                float currentSpeed = movement.Velocity.Length(); 
+                currentSpeed *= 1.05f;
+
+                int directionX = ballTransform.Position.X < gs.Settings.ScreenWidth / 2 ? 1 : -1;
+
+                movement.Velocity = new Vector2(
+                    directionX * (float)Math.Cos(newAngle) * currentSpeed,
+                    (float)Math.Sin(newAngle) * currentSpeed
+                );
+                
+                if (movement.Velocity.X > 0) // Golpea Paleta 1 (Sale a la Derecha)
+                {
+                    // Posiciona en el borde DERECHO de la Paleta 1.
+                    ballTransform.Position = ballTransform.Position with { X = transform.Position.X + shape.Width }; 
+                }
+                else // Golpea Paleta 2 (Sale a la Izquierda)
+                {
+                    // Posiciona en el borde IZQUIERDO de la Paleta 2.
+                    ballTransform.Position = ballTransform.Position with { X = transform.Position.X - ballShape.Width };
+                }
             }
         }
     }
