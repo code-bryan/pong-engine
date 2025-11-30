@@ -32,7 +32,6 @@ The solution is divided into four distinct projects, enforcing strict dependency
 | **`Engine.Core`** | **The ECS Framework.** Contains `EntityManager`, all **Components**, and `ISystem` interfaces. | None (Pure C# Library) |
 | **`Pong.Core`** | **Configuration & Game Data.** Contains `EngineSettings` and `GameplaySettings`. | References `Engine.Core` |
 | **`Pong.Systems`** | **The Game Logic.** Contains all **Systems** (`CollisionSystem`, `AISystem`, etc.). | References `Engine.Core` & `Pong.Core` |
-| **`Pong.Prefabs`** | **Entity Blueprints.** Contains static methods for assembling specific component sets (e.g., `CreatePaddle`, `CreateBall`). | References `Engine.Core` & `Pong.Core` |
 | **`Pong.Desktop`** | **The Launcher.** Contains `Game1.cs`, initializes hardware, loads assets, and executes the system loop. | References all other projects |
 
 ---
@@ -61,4 +60,4 @@ The Pong implementation served as a robust testing ground for several advanced e
 ### 4. Code Quality and Maintenance
 
 * **`TagComponent`:** Used as a universal identifier (e.g., `"Ball"`, `"Paddle"`), replacing empty component classes. This allows systems to filter entities based on role without needing unnecessary component dependencies.
-* **Prefab Pattern:** Entity creation is clean and reusable via the `Pong.Prefabs` factory classes, making `Game1.cs` simple and readable.
+* **Prefab Pattern:** Entity creation is clean and reusable via the `Pong.Desktop.Prefab` factory classes, making `Game1.cs` simple and readable.
